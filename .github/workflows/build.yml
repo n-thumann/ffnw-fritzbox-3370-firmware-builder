@@ -1,0 +1,62 @@
+name: Build and release
+
+on:
+  workflow_dispatch:
+    inputs:
+      ffnw-tag:
+        required: true
+        type: string
+      ffnw-release:
+        required: true
+        type: string
+      gluon-release:
+        required: true
+        type: string
+      gluon-commit:
+        required: true
+        type: string
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: earthly/actions-setup@v1
+        with:
+          version: "v0.6.30"
+      - uses: actions/checkout@v3
+      - name: Build images
+        run: |
+          earthly +build \
+          --ffnw_tag ${{ inputs.ffnw-tag }} \
+          --ffnw_release ${{ inputs.ffnw-release }} \
+          --gluon_release ${{ inputs.gluon-release }} \
+          --gluon_commit ${{ inputs.gluon-commit }}
+      - name: Upload images
+        uses: actions/upload-artifact@v3
+        with:
+          name: images
+          path: ./images/*/*
+
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    needs: build
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Download images
+        uses: actions/download-artifact@v3
+        with:
+          name: images
+          path: ./images
+      - name: Create release
+        run: |
+          gh release create \
+          --latest \
+          --notes "Based on Freifunk Nordwest site configuration [${{ inputs.ffnw-tag }}](https://git.ffnw.de/ffnw-firmware/siteconf/-/tags/${{ inputs.ffnw-tag }}) using Gluon ${{ inputs.gluon-release }} (${{ inputs.gluon-commit }})" \
+          "${{ inputs.ffnw-release }}" \
+          ./images/*/*
