@@ -1,5 +1,5 @@
 VERSION 0.7
-FROM debian:bullseye
+FROM debian:bookworm
 
 dependencies:
     RUN apt-get update
