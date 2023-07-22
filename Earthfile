@@ -50,7 +50,7 @@ setup-ffnw-site:
     RUN git tag -d $ffnw_tag
     RUN git tag $ffnw_release
     RUN ./buildscript.sh patch
-    RUN ./buildscript.sh prepare GLUON_BRANCH stable
+    RUN ./buildscript.sh prepare GLUON_AUTOUPDATER_BRANCH stable
     RUN ./buildscript.sh prepare GLUON_RELEASE $ffnw_release
     RUN ./buildscript.sh prepare l2tp
 
