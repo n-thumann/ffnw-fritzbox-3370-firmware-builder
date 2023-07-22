@@ -1,12 +1,12 @@
 VERSION 0.7
-FROM debian:bullseye
+FROM debian:bookworm
 
 dependencies:
     RUN apt-get update
     RUN apt-get install -y --no-install-recommends \
         git \
         subversion \
-        python \
+        python3 \
         build-essential \
         gawk \
         unzip \
@@ -15,6 +15,7 @@ dependencies:
         libssl-dev \
         wget \
         time \
+        rsync \
         ca-certificates \
         file
     RUN adduser builder
@@ -50,7 +51,7 @@ setup-ffnw-site:
     RUN git tag -d $ffnw_tag
     RUN git tag $ffnw_release
     RUN ./buildscript.sh patch
-    RUN ./buildscript.sh prepare GLUON_BRANCH stable
+    RUN ./buildscript.sh prepare GLUON_AUTOUPDATER_BRANCH stable
     RUN ./buildscript.sh prepare GLUON_RELEASE $ffnw_release
     RUN ./buildscript.sh prepare l2tp
 
