@@ -6,7 +6,7 @@ dependencies:
     RUN apt-get install -y --no-install-recommends \
         git \
         subversion \
-        python \
+        python3 \
         build-essential \
         gawk \
         unzip \
@@ -15,6 +15,7 @@ dependencies:
         libssl-dev \
         wget \
         time \
+        rsync \
         ca-certificates \
         file
     RUN adduser builder
